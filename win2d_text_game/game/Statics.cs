@@ -44,28 +44,13 @@ namespace win2d_text_game
         public static int PauseBetweenBattlesMilliseconds = 500;
 
         public static Random Random = new Random(DateTime.Now.Millisecond);
-        public static CanvasTextFormat FontSmall = new CanvasTextFormat();
-        public static CanvasTextFormat FontMedium = new CanvasTextFormat();
-        public static CanvasTextFormat FontLarge = new CanvasTextFormat();
-        public static CanvasTextFormat FontExtraLarge = new CanvasTextFormat();
+        public static CanvasTextFormat DefaultFont = new CanvasTextFormat();
 
         static Statics()
         {
-            FontSmall.FontFamily = "Old English Text MT";
-            FontSmall.FontSize = 18;
-            FontSmall.WordWrapping = CanvasWordWrapping.NoWrap;
-
-            FontMedium.FontFamily = "Old English Text MT";
-            FontMedium.FontSize = 24;
-            FontMedium.WordWrapping = CanvasWordWrapping.NoWrap;
-
-            FontLarge.FontFamily = "Old English Text MT";
-            FontLarge.FontSize = 32;
-            FontLarge.WordWrapping = CanvasWordWrapping.NoWrap;
-
-            FontExtraLarge.FontFamily = "Old English Text MT";
-            FontExtraLarge.FontSize = 48;
-            FontExtraLarge.WordWrapping = CanvasWordWrapping.NoWrap;
+            DefaultFont.FontFamily = "Arial";
+            DefaultFont.FontSize = 12;
+            DefaultFont.WordWrapping = CanvasWordWrapping.NoWrap;
         }
 
         public static Color RandomColor()

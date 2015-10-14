@@ -38,20 +38,20 @@ namespace win2d_text_game
             args.DrawingSession.DrawRectangle(new Rect(980, 100, 850, 220), Colors.White);
             args.DrawingSession.DrawRectangle(new Rect(980, 320, 850, 50), Colors.White);
 
-            args.DrawingSession.DrawText("Recent Contentions", new Vector2(Position.X, 53), Colors.White, Statics.FontLarge);
+            // args.DrawingSession.DrawText("Recent Contentions", new Vector2(Position.X, 53), Colors.White, Statics.FontLarge);
 
-            float fCurrentY = Position.Y;
-            int i = 0;
-            for (i = 0; i < Strings.Count - 1; i++)
-            {
-                args.DrawingSession.DrawText(Strings[i].String, new Vector2(Position.X, fCurrentY), Strings[i].Color, Statics.FontSmall);
-                fCurrentY += 20;
-            }
+            //float fCurrentY = Position.Y;
+            //int i = 0;
+            //for (i = 0; i < Strings.Count - 1; i++)
+            //{
+            //    args.DrawingSession.DrawText(Strings[i].String, new Vector2(Position.X, fCurrentY), Strings[i].Color, Statics.FontSmall);
+            //    fCurrentY += 20;
+            //}
 
-            if (Strings.Count > 0)
-            {
-                args.DrawingSession.DrawText(Strings[i].String, new Vector2(Position.X, Position.Y + 205), Strings[i].Color, Statics.FontLarge);
-            }
+            //if (Strings.Count > 0)
+            //{
+            //    args.DrawingSession.DrawText(Strings[i].String, new Vector2(Position.X, Position.Y + 205), Strings[i].Color, Statics.FontLarge);
+            //}
         }
 
         public static void Clear()
