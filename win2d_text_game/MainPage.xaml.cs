@@ -59,6 +59,7 @@ namespace win2d_text_game
         private void canvasMain_Draw(ICanvasAnimatedControl sender, CanvasAnimatedDrawEventArgs args)
         {
             textbox.Draw(args);
+            DrawDebug(args);
         }
 
         private void canvasMain_Update(ICanvasAnimatedControl sender, CanvasAnimatedUpdateEventArgs args)
@@ -69,6 +70,11 @@ namespace win2d_text_game
         private void canvasMain_CreateResources(CanvasAnimatedControl sender, CanvasCreateResourcesEventArgs args)
         {
             textbox = new Textbox(sender.Device, new System.Numerics.Vector2(200, 200), 600);
+        }
+
+        private void DrawDebug(CanvasAnimatedDrawEventArgs args)
+        {
+            args.DrawingSession.DrawText("Calculate count: " + Statics.CalculateCount.ToString(), new System.Numerics.Vector2(100, 100), Colors.White);
         }
     }
 }

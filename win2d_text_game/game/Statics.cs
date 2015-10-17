@@ -6,11 +6,15 @@ using Windows.Foundation;
 using Microsoft.Graphics.Canvas.Text;
 using System.Numerics;
 using Microsoft.Graphics.Canvas;
+using System.Runtime.InteropServices;
+using Windows.System;
+using System.Text;
 
 namespace win2d_text_game
 {
     public static class Statics
     {
+        public static int CalculateCount = 0;
         public static int MaxStringWidth = 0;
 
         public static int MouseX = 0;
@@ -49,7 +53,7 @@ namespace win2d_text_game
         static Statics()
         {
             DefaultFont.FontFamily = "Arial";
-            DefaultFont.FontSize = 12;
+            DefaultFont.FontSize = 14;
             DefaultFont.WordWrapping = CanvasWordWrapping.NoWrap;
         }
 
@@ -65,6 +69,28 @@ namespace win2d_text_game
         public static string RandomString(this string[] array)
         {
             return array[Statics.Random.Next(array.Length)];
+        }
+
+        [DllImport("user32.dll")]
+        public static extern int ToUnicode(uint virtualKeyCode, uint scanCode,
+            byte[] keyboardState,
+            [Out, MarshalAs(UnmanagedType.LPWStr, SizeConst = 64)]
+            StringBuilder receivingBuffer,
+            int bufferSize, uint flags);
+
+        public static string VirtualKeyToString(VirtualKey keys, bool shift = false, bool altGr = false)
+        {
+            var buf = new StringBuilder(256);
+            var keyboardState = new byte[256];
+            if (shift)
+                keyboardState[(int)VirtualKey.Shift] = 0xff;
+            if (altGr)
+            {
+                keyboardState[(int)VirtualKey.Control] = 0xff;
+                keyboardState[(int)VirtualKey.Menu] = 0xff;
+            }
+            ToUnicode((uint)keys, 0, keyboardState, buf, 256, 0);
+            return buf.ToString();
         }
     }
 }

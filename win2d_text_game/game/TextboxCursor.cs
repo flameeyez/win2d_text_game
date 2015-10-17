@@ -1,4 +1,5 @@
-﻿using Microsoft.Graphics.Canvas.Text;
+﻿using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using System;
 using System.Collections.Generic;
@@ -23,24 +24,27 @@ namespace win2d_text_game
         public Vector2 Position { get; set; }
         private TimeSpan LastUpdate { get; set; }
 
-        private static string CursorCharacter = "|";
+        // private static string CursorCharacter = "|";
+        private CanvasTextLayout CursorCharacter { get; set; }
 
         private Color Color { get; set; }
 
         private static int UpdateThreshold = 300;
 
-        public TextboxCursor(Vector2 position, Color color)
+        public TextboxCursor(CanvasDevice device, Color color)
         {
-            Position = position;
             Color = color;
             LastUpdate = TimeSpan.Zero;
+
+            CursorCharacter = new CanvasTextLayout(device, "|", Statics.DefaultFont, 0, 0);
         }
 
         public void Draw(CanvasAnimatedDrawEventArgs args)
         {
             if (State == CURSOR_STATE.ON)
             {
-                args.DrawingSession.DrawText(CursorCharacter, Position, Color);
+                args.DrawingSession.DrawTextLayout(CursorCharacter, Position, Color);
+                // args.DrawingSession.DrawText(CursorCharacter, Position, Color, Statics.DefaultFont);
             }
         }
 

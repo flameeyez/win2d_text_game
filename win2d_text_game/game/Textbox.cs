@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.System;
+using System.Runtime.InteropServices;
 
 namespace win2d_text_game
 {
@@ -24,9 +25,11 @@ namespace win2d_text_game
 
         // CanvasTextLayout?
         public string Text { get; set; }
-        public int MaxTextLength { get; set; }
+        // public int MaxTextLength { get; set; }
 
         private TextboxCursor Cursor { get; set; }
+        private int CursorStringIndex { get; set; }
+        private bool bUpdateCursorPosition { get; set; }
 
         private Rect Border { get; set; }
         private Color Color { get; set; }
@@ -46,7 +49,10 @@ namespace win2d_text_game
 
             TextPosition = new Vector2(position.X + PaddingX, position.Y + PaddingY);
             Border = new Rect(position.X, position.Y, width, Height);
-            Cursor = new TextboxCursor(CalculateCursorPosition(device), Colors.White);
+
+            Cursor = new TextboxCursor(device, Colors.White);
+            CursorStringIndex = 0;
+            bUpdateCursorPosition = true;
         }
 
         public void Draw(CanvasAnimatedDrawEventArgs args)
@@ -63,89 +69,87 @@ namespace win2d_text_game
 
         private void DrawText(CanvasAnimatedDrawEventArgs args)
         {
-            if(Text != null)
-            {
-                args.DrawingSession.DrawText(Text, TextPosition, Colors.White, Statics.DefaultFont);
-            }            
+            if (Text == null) { return; }
+            args.DrawingSession.DrawText(Text, TextPosition, Colors.White, Statics.DefaultFont);
         }
 
         private void DrawCursor(CanvasAnimatedDrawEventArgs args)
         {
-            Cursor.Position = CalculateCursorPosition(args.DrawingSession);
+            if (bUpdateCursorPosition)
+            {
+                Cursor.Position = CalculateCursorPosition(args.DrawingSession);
+            }
+
             Cursor.Draw(args);
         }
 
+        #region Keyboard Handling
         public void KeyDown(VirtualKey virtualKey)
         {
-            if (!KeyboardState.Contains(virtualKey))
+            if (virtualKey == VirtualKey.Back)
             {
-                KeyboardState.Add(virtualKey);
-            }
-
-            if (virtualKey == VirtualKey.Back && Text.Length > 0)
-            {
-                Text = Text.Substring(0, Text.Length - 1);
-            }
-        }
-
-        public void KeyUp(VirtualKey virtualKey)
-        {
-            if (!KeyboardState.Contains(virtualKey)) { return; }
-
-            if (virtualKey >= VirtualKey.Number0 && virtualKey <= VirtualKey.Number9)
-            {
-                Text += virtualKey;
-            }
-            else if (virtualKey == VirtualKey.Space)
-            {
-                Text += " ";
-            }
-            else if (virtualKey >= VirtualKey.A && virtualKey <= VirtualKey.Z)
-            {
-                if (KeyboardState.Contains(VirtualKey.Shift))
+                if (Text != null && Text.Length > 0)
                 {
-                    Text += virtualKey;
+                    Text = Text.Substring(0, Text.Length - 1);
+                    --CursorStringIndex;
+                    bUpdateCursorPosition = true;
                 }
-                else
-                {
-                    Text += virtualKey.ToString().ToLower();
-                }
-            }
-            //else
-            //{
-            //    int keyValue = (int)args.VirtualKey;
-            //    if ((keyValue >= 0x30 && keyValue <= 0x39) // numbers
-            //     || (keyValue >= 0x41 && keyValue <= 0x5A) // letters
-            //     || (keyValue >= 0x60 && keyValue <= 0x69)) // numpad
-            //    {
-            //        textbox.Text += args.VirtualKey.ToString().ToLower();
-            //    }
-            //}
-        }
-
-        private Vector2 CalculateCursorPosition(ICanvasResourceCreator resourceCreator)
-        {
-            if (Text == null)
-            {
-                return new Vector2(Position.X + PaddingX, Position.Y);
             }
             else
             {
-                CanvasTextLayout layout = new CanvasTextLayout(resourceCreator, Text, Statics.DefaultFont, 0, 0);
-                return new Vector2(Position.X + (float)layout.LayoutBounds.Width + PaddingX, Position.Y);
+                KeyboardState.Add(virtualKey);
+            }
+        }
+        public void KeyUp(VirtualKey virtualKey)
+        {
+            if (!KeyboardState.Contains(virtualKey)) { return; }
+            KeyboardState.Remove(virtualKey);
+
+            if (virtualKey == VirtualKey.Left)
+            {
+                if (CursorStringIndex < Text.Length)
+                {
+                    ++CursorStringIndex;
+                }
+            }
+            else if (virtualKey == VirtualKey.Right)
+            {
+                if(CursorStringIndex > 0)
+                {
+                    --CursorStringIndex;
+                }
+            }
+            else
+            {
+                string s = Statics.VirtualKeyToString(virtualKey, KeyboardState.Contains(VirtualKey.Shift));
+                if (s.Length > 1) { throw new Exception(); }
+                Text += s;
+
+                ++CursorStringIndex;
+                bUpdateCursorPosition = true;
+            }
+        }
+        #endregion
+
+        private Vector2 CalculateCursorPosition(ICanvasResourceCreator resourceCreator)
+        {
+            Statics.CalculateCount++;
+            bUpdateCursorPosition = false;
+
+            if (Text == null || Text.Length == 0)
+            {
+                return new Vector2(Position.X + PaddingX, Position.Y + PaddingY);
+            }
+            else
+            {
+                CanvasTextLayout layout = new CanvasTextLayout(resourceCreator, Text.Replace(' ', '.'), Statics.DefaultFont, 0, 0);
+                return new Vector2(Position.X + (float)layout.LayoutBounds.Width + PaddingX, Position.Y + PaddingY);
             }
         }
 
         public void Update(CanvasAnimatedUpdateEventArgs args)
         {
             Cursor.Update(args);
-        }
-
-        public void KeyPress()
-        {
-            // update Text
-            // update TextLayout
-            // update cursor position
         }
     }
 }
