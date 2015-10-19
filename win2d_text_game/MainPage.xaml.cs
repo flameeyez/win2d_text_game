@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using Windows.System;
+using Windows.UI.Input;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -70,15 +71,18 @@ namespace win2d_text_game
         private void gridMain_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             ControlInFocus = null;
+            PointerPoint p = e.GetCurrentPoint(this);
 
             foreach (win2d_Control control in Controls)
             {
-                if (control.MouseDown(e.GetCurrentPoint(this).Position))
+                if (control.HitTest(p.Position))
                 {
                     Statics.ControlInFocusString = "Control in focus: " + control.ToString();
 
-                    ControlInFocus = control;
+                    control.MouseDown(p);
                     control.GiveFocus();
+                    ControlInFocus = control;
+
                     return;
                 }
                 else
@@ -92,13 +96,33 @@ namespace win2d_text_game
 
         private void gridMain_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
+            PointerPoint p = e.GetCurrentPoint(this);
+
             foreach (win2d_Control control in Controls)
             {
-                if (control.MouseUp(e.GetCurrentPoint(this).Position)) { break; }
+                if(control.HitTest(p.Position))
+                {
+                    control.MouseUp(p);
+                }
             }
         }
 
-        private void gridMain_PointerMoved(object sender, PointerRoutedEventArgs e) { }
+        private void gridMain_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            PointerPoint p = e.GetCurrentPoint(this);
+
+            foreach (win2d_Control control in Controls)
+            {
+                if(control.HitTest(p.Position))
+                {
+                    control.MouseEnter(p);
+                }
+                else
+                {
+                    control.MouseLeave();
+                }
+            }
+        }
 
         private void canvasMain_Draw(ICanvasAnimatedControl sender, CanvasAnimatedDrawEventArgs args)
         {
@@ -112,7 +136,7 @@ namespace win2d_text_game
 
         private void canvasMain_Update(ICanvasAnimatedControl sender, CanvasAnimatedUpdateEventArgs args)
         {
-            foreach(win2d_Control control in Controls)
+            foreach (win2d_Control control in Controls)
             {
                 control.Update(args);
             }

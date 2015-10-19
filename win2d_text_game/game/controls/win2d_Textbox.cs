@@ -133,10 +133,6 @@ namespace win2d_text_game
 
             return true;
         }
-        public override bool MouseDown(Point point)
-        {
-            return HitTest(point);
-        }
         #endregion
 
         private Vector2 CalculateCursorPosition(ICanvasResourceCreator resourceCreator)

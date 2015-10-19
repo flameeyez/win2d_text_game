@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Input;
 
 namespace win2d_text_game
 {
@@ -17,6 +18,8 @@ namespace win2d_text_game
         private Rect ButtonRectangle { get; set; }
         private CanvasTextLayout TextLayout { get; set; }
         private Vector2 TextLayoutPosition { get; set; }
+
+        private bool MouseCurrentlyOverControl { get; set; }
 
         public win2d_Button(CanvasDevice device, Vector2 position, int width, int height, string text)
             : base(position, width, height)
@@ -49,23 +52,32 @@ namespace win2d_text_game
         public override void Update(CanvasAnimatedUpdateEventArgs args) { }
 
         #region Event Handlers
-        public override bool MouseDown(Point point)
+        public override void MouseUp(PointerPoint p)
         {
-            if (HitTest(point)) { return true; }
-            else { return false; }
-        }
+            Color = Colors.Gray;
 
-        public override bool MouseUp(Point point)
-        {
-            if (HitTest(point) && HasFocus)
+            if (HasFocus)
             {
                 OnClick();
-                return true;
             }
-            else
+        }
+
+        public override void MouseDown(PointerPoint p)
+        {
+            Color = Colors.LightGray;
+        }
+
+        public override void MouseEnter(PointerPoint p)
+        {
+            if(HasFocus && p.Properties.IsLeftButtonPressed)
             {
-                return false;
+                Color = Colors.LightGray;
             }
+        }
+
+        public override void MouseLeave()
+        {
+            Color = Colors.Gray;
         }
         #endregion
     }

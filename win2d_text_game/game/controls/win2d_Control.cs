@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.Input;
 
 namespace win2d_text_game
 {
@@ -50,8 +51,10 @@ namespace win2d_text_game
 
         public virtual bool KeyDown(VirtualKey virtualKey) { return false; }
         public virtual bool KeyUp(VirtualKey virtualKey) { return false; }
-        public virtual bool MouseDown(Point point) { return false; }
-        public virtual bool MouseUp(Point point) { return false; }
+        public virtual void MouseDown(PointerPoint p) { }
+        public virtual void MouseUp(PointerPoint p) { }
+        public virtual void MouseEnter(PointerPoint p) { }
+        public virtual void MouseLeave() { }
 
         public virtual void GiveFocus() { HasFocus = true; }
         public virtual void LoseFocus() { HasFocus = false; }
