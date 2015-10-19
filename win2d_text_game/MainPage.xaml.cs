@@ -155,6 +155,18 @@ namespace win2d_text_game
         private void Button_Click()
         {
             Statics.ButtonClickCount++;
+
+            if (textbox.Text != null)
+            {
+                if (textbox.Text.Trim() != string.Empty)
+                {
+                    Statics.TextString = textbox.Text;
+                }
+
+                textbox.Text = string.Empty;
+                ControlInFocus = textbox;
+                textbox.GiveFocus();
+            }
         }
 
         private void DrawDebug(CanvasAnimatedDrawEventArgs args)
@@ -162,6 +174,7 @@ namespace win2d_text_game
             args.DrawingSession.DrawText("Calculate count: " + Statics.CalculateCount.ToString(), new System.Numerics.Vector2(100, 100), Colors.White);
             args.DrawingSession.DrawText("Button click count: " + Statics.ButtonClickCount.ToString(), new System.Numerics.Vector2(100, 120), Colors.White);
             args.DrawingSession.DrawText(Statics.ControlInFocusString, new System.Numerics.Vector2(100, 140), Colors.White);
+            args.DrawingSession.DrawText(Statics.TextString, new System.Numerics.Vector2(100, 160), Colors.White);
         }
     }
 }

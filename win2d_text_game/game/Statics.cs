@@ -18,6 +18,7 @@ namespace win2d_text_game
         public static int MaxStringWidth = 0;
         public static int ButtonClickCount = 0;
         public static string ControlInFocusString = "Control in focus: N/A";
+        public static string TextString = "Test!";
 
         public static int MouseX = 0;
         public static int MouseY = 0;

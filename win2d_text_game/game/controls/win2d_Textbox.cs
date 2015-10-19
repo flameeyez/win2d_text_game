@@ -20,7 +20,19 @@ namespace win2d_text_game
         private static int PaddingY = 10;
 
         // CanvasTextLayout?
-        public string Text { get; set; }
+        private string _text;
+        public string Text
+        {
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                _text = value;
+                bUpdateCursorPosition = true;
+            }
+        }
         // public int MaxTextLength { get; set; }
 
         private win2d_TextboxCursor Cursor { get; set; }
@@ -85,6 +97,7 @@ namespace win2d_text_game
         #region Event Handling
         public override bool KeyDown(VirtualKey virtualKey)
         {
+            if (virtualKey == VirtualKey.Enter) { return true; }
             if (virtualKey == VirtualKey.Back)
             {
                 if (Text != null && Text.Length > 0)
@@ -116,7 +129,7 @@ namespace win2d_text_game
             }
             else if (virtualKey == VirtualKey.Right)
             {
-                if(CursorStringIndex > 0)
+                if (CursorStringIndex > 0)
                 {
                     --CursorStringIndex;
                 }
