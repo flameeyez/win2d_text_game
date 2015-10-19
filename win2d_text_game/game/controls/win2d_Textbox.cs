@@ -14,31 +14,24 @@ using System.Runtime.InteropServices;
 
 namespace win2d_text_game
 {
-    class Textbox
+    class win2d_Textbox : win2d_Control
     {
         private static int PaddingX = 10;
         private static int PaddingY = 10;
-
-        private Vector2 Position { get; set; }
-        private int Width { get; set; }
-        private int Height { get; set; }
 
         // CanvasTextLayout?
         public string Text { get; set; }
         // public int MaxTextLength { get; set; }
 
-        private TextboxCursor Cursor { get; set; }
+        private win2d_TextboxCursor Cursor { get; set; }
         private int CursorStringIndex { get; set; }
         private bool bUpdateCursorPosition { get; set; }
-
         private Rect Border { get; set; }
-        private Color Color { get; set; }
-
         private Vector2 TextPosition { get; set; }
 
         private HashSet<VirtualKey> KeyboardState = new HashSet<VirtualKey>();
 
-        public Textbox(CanvasDevice device, Vector2 position, int width)
+        public win2d_Textbox(CanvasDevice device, Vector2 position, int width) : base(position, width, -1)
         {
             CanvasTextLayout layout = new CanvasTextLayout(device, "TEST!", Statics.DefaultFont, 0, 0);
 
@@ -50,16 +43,21 @@ namespace win2d_text_game
             TextPosition = new Vector2(position.X + PaddingX, position.Y + PaddingY);
             Border = new Rect(position.X, position.Y, width, Height);
 
-            Cursor = new TextboxCursor(device, Colors.White);
+            Cursor = new win2d_TextboxCursor(device, Colors.White);
             CursorStringIndex = 0;
             bUpdateCursorPosition = true;
         }
 
-        public void Draw(CanvasAnimatedDrawEventArgs args)
+        #region Draw
+        public override void Draw(CanvasAnimatedDrawEventArgs args)
         {
             DrawBorder(args);
             DrawText(args);
-            DrawCursor(args);
+
+            if (HasFocus)
+            {
+                DrawCursor(args);
+            }
         }
 
         private void DrawBorder(CanvasAnimatedDrawEventArgs args)
@@ -82,9 +80,10 @@ namespace win2d_text_game
 
             Cursor.Draw(args);
         }
+        #endregion
 
-        #region Keyboard Handling
-        public void KeyDown(VirtualKey virtualKey)
+        #region Event Handling
+        public override bool KeyDown(VirtualKey virtualKey)
         {
             if (virtualKey == VirtualKey.Back)
             {
@@ -99,10 +98,13 @@ namespace win2d_text_game
             {
                 KeyboardState.Add(virtualKey);
             }
+
+            // consider if textbox has focus?
+            return true;
         }
-        public void KeyUp(VirtualKey virtualKey)
+        public override bool KeyUp(VirtualKey virtualKey)
         {
-            if (!KeyboardState.Contains(virtualKey)) { return; }
+            if (!KeyboardState.Contains(virtualKey)) { return true; }
             KeyboardState.Remove(virtualKey);
 
             if (virtualKey == VirtualKey.Left)
@@ -128,6 +130,12 @@ namespace win2d_text_game
                 ++CursorStringIndex;
                 bUpdateCursorPosition = true;
             }
+
+            return true;
+        }
+        public override bool MouseDown(Point point)
+        {
+            return HitTest(point);
         }
         #endregion
 
@@ -147,7 +155,7 @@ namespace win2d_text_game
             }
         }
 
-        public void Update(CanvasAnimatedUpdateEventArgs args)
+        public override void Update(CanvasAnimatedUpdateEventArgs args)
         {
             Cursor.Update(args);
         }

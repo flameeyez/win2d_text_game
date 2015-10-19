@@ -99,6 +99,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="game\controls\win2d_Button.cs" />
+    <Compile Include="game\controls\win2d_Control.cs" />
     <Compile Include="game\IRichString.cs" />
     <Compile Include="game\RichListBox.cs" />
     <Compile Include="game\RichListBoxProminent.cs" />
@@ -106,8 +108,8 @@
     <Compile Include="game\RichStringPart.cs" />
     <Compile Include="game\Statics.cs" />
     <Compile Include="game\StringManager.cs" />
-    <Compile Include="game\Textbox.cs" />
-    <Compile Include="game\TextboxCursor.cs" />
+    <Compile Include="game\controls\win2d_Textbox.cs" />
+    <Compile Include="game\controls\win2d_TextboxCursor.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

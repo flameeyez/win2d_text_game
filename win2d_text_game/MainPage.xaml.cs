@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -26,7 +27,11 @@ namespace win2d_text_game
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        Textbox textbox;
+        win2d_Textbox textbox;
+        win2d_Button button;
+
+        List<win2d_Control> Controls = new List<win2d_Control>();
+        win2d_Control ControlInFocus;
 
         public MainPage()
         {
@@ -38,43 +43,101 @@ namespace win2d_text_game
 
         private void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
         {
-            textbox.KeyDown(args.VirtualKey);
+            if (ControlInFocus != null)
+            {
+                ControlInFocus.KeyDown(args.VirtualKey);
+            }
+
+            //foreach (win2d_Control control in Controls)
+            //{
+            //    if (control.KeyDown(args.VirtualKey)) { break; }
+            //}
         }
 
         private void CoreWindow_KeyUp(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
         {
-            textbox.KeyUp(args.VirtualKey);
+            if (ControlInFocus != null)
+            {
+                ControlInFocus.KeyUp(args.VirtualKey);
+            }
+
+            //foreach (win2d_Control control in Controls)
+            //{
+            //    if (control.KeyUp(args.VirtualKey)) { break; }
+            //}
+        }
+
+        private void gridMain_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            ControlInFocus = null;
+
+            foreach (win2d_Control control in Controls)
+            {
+                if (control.MouseDown(e.GetCurrentPoint(this).Position))
+                {
+                    Statics.ControlInFocusString = "Control in focus: " + control.ToString();
+
+                    ControlInFocus = control;
+                    control.GiveFocus();
+                    return;
+                }
+                else
+                {
+                    control.LoseFocus();
+                }
+            }
+
+            Statics.ControlInFocusString = "Control in focus: N/A";
         }
 
         private void gridMain_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-
+            foreach (win2d_Control control in Controls)
+            {
+                if (control.MouseUp(e.GetCurrentPoint(this).Position)) { break; }
+            }
         }
 
-        private void gridMain_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-
-        }
+        private void gridMain_PointerMoved(object sender, PointerRoutedEventArgs e) { }
 
         private void canvasMain_Draw(ICanvasAnimatedControl sender, CanvasAnimatedDrawEventArgs args)
         {
-            textbox.Draw(args);
+            foreach (win2d_Control control in Controls)
+            {
+                control.Draw(args);
+            }
+
             DrawDebug(args);
         }
 
         private void canvasMain_Update(ICanvasAnimatedControl sender, CanvasAnimatedUpdateEventArgs args)
         {
-            textbox.Update(args);
+            foreach(win2d_Control control in Controls)
+            {
+                control.Update(args);
+            }
         }
 
         private void canvasMain_CreateResources(CanvasAnimatedControl sender, CanvasCreateResourcesEventArgs args)
         {
-            textbox = new Textbox(sender.Device, new System.Numerics.Vector2(200, 200), 600);
+            textbox = new win2d_Textbox(sender.Device, new Vector2(200, 200), 600);
+            button = new win2d_Button(sender.Device, new Vector2(400, 400), 100, 50, "Test button!");
+            button.Click += Button_Click;
+
+            Controls.Add(textbox);
+            Controls.Add(button);
+        }
+
+        private void Button_Click()
+        {
+            Statics.ButtonClickCount++;
         }
 
         private void DrawDebug(CanvasAnimatedDrawEventArgs args)
         {
             args.DrawingSession.DrawText("Calculate count: " + Statics.CalculateCount.ToString(), new System.Numerics.Vector2(100, 100), Colors.White);
+            args.DrawingSession.DrawText("Button click count: " + Statics.ButtonClickCount.ToString(), new System.Numerics.Vector2(100, 120), Colors.White);
+            args.DrawingSession.DrawText(Statics.ControlInFocusString, new System.Numerics.Vector2(100, 140), Colors.White);
         }
     }
 }

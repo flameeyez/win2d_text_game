@@ -12,7 +12,7 @@ using Windows.UI;
 
 namespace win2d_text_game
 {
-    class TextboxCursor
+    class win2d_TextboxCursor
     {
         public enum CURSOR_STATE
         {
@@ -31,7 +31,7 @@ namespace win2d_text_game
 
         private static int UpdateThreshold = 300;
 
-        public TextboxCursor(CanvasDevice device, Color color)
+        public win2d_TextboxCursor(CanvasDevice device, Color color)
         {
             Color = color;
             LastUpdate = TimeSpan.Zero;
