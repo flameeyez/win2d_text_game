@@ -101,6 +101,10 @@
     </Compile>
     <Compile Include="game\controls\win2d_Button.cs" />
     <Compile Include="game\controls\win2d_Control.cs" />
+    <Compile Include="game\controls\win2d_ScrollBar.cs" />
+    <Compile Include="game\controls\win2d_Textblock.cs" />
+    <Compile Include="game\controls\win2d_TextblockString.cs" />
+    <Compile Include="game\controls\win2d_TextblockStringCollection.cs" />
     <Compile Include="game\IRichString.cs" />
     <Compile Include="game\RichListBox.cs" />
     <Compile Include="game\RichListBoxProminent.cs" />

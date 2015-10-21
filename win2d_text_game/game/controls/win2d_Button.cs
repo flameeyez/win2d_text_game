@@ -55,11 +55,7 @@ namespace win2d_text_game
         public override void MouseUp(PointerPoint p)
         {
             Color = Colors.Gray;
-
-            if (HasFocus)
-            {
-                OnClick();
-            }
+            base.MouseUp(p);
         }
 
         public override void MouseDown(PointerPoint p)

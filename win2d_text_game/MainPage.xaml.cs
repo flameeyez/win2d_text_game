@@ -30,6 +30,7 @@ namespace win2d_text_game
     {
         win2d_Textbox textbox;
         win2d_Button button;
+        win2d_Textblock textblock;
 
         List<win2d_Control> Controls = new List<win2d_Control>();
         win2d_Control ControlInFocus;
@@ -48,11 +49,6 @@ namespace win2d_text_game
             {
                 ControlInFocus.KeyDown(args.VirtualKey);
             }
-
-            //foreach (win2d_Control control in Controls)
-            //{
-            //    if (control.KeyDown(args.VirtualKey)) { break; }
-            //}
         }
 
         private void CoreWindow_KeyUp(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
@@ -61,11 +57,6 @@ namespace win2d_text_game
             {
                 ControlInFocus.KeyUp(args.VirtualKey);
             }
-
-            //foreach (win2d_Control control in Controls)
-            //{
-            //    if (control.KeyUp(args.VirtualKey)) { break; }
-            //}
         }
 
         private void gridMain_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -140,27 +131,39 @@ namespace win2d_text_game
             {
                 control.Update(args);
             }
+
+            Statics.UpdateString = "Update time: " + args.Timing.ElapsedTime.TotalMilliseconds.ToString() + "ms";
         }
 
         private void canvasMain_CreateResources(CanvasAnimatedControl sender, CanvasCreateResourcesEventArgs args)
         {
-            textbox = new win2d_Textbox(sender.Device, new Vector2(200, 200), 600);
-            button = new win2d_Button(sender.Device, new Vector2(400, 400), 100, 50, "Test button!");
+            int clientWidth = (int)sender.Size.Width;
+            int clientHeight = (int)sender.Size.Height;
+
+            Vector2 textboxPosition = new Vector2(200, clientHeight - 50);
+            textbox = new win2d_Textbox(sender.Device, textboxPosition, 600);
+
+            button = new win2d_Button(sender.Device, new Vector2(textboxPosition.X + textbox.Width + 20, textboxPosition.Y), 100, textbox.Height, "Test button!");
             button.Click += Button_Click;
+
+            textblock = new win2d_Textblock(new Vector2(200, 20), textbox.Width + 20 + button.Width, clientHeight - textbox.Height - 40);
 
             Controls.Add(textbox);
             Controls.Add(button);
+            Controls.Add(textblock);
         }
 
-        private void Button_Click()
+        private void Button_Click(PointerPoint point)
         {
             Statics.ButtonClickCount++;
 
             if (textbox.Text != null)
             {
-                if (textbox.Text.Trim() != string.Empty)
+                string text = textbox.Text.Trim();
+
+                if (text != string.Empty)
                 {
-                    Statics.TextString = textbox.Text;
+                    textblock.Append(canvasMain.Device, text);
                 }
 
                 textbox.Text = string.Empty;
@@ -171,10 +174,11 @@ namespace win2d_text_game
 
         private void DrawDebug(CanvasAnimatedDrawEventArgs args)
         {
-            args.DrawingSession.DrawText("Calculate count: " + Statics.CalculateCount.ToString(), new System.Numerics.Vector2(100, 100), Colors.White);
-            args.DrawingSession.DrawText("Button click count: " + Statics.ButtonClickCount.ToString(), new System.Numerics.Vector2(100, 120), Colors.White);
-            args.DrawingSession.DrawText(Statics.ControlInFocusString, new System.Numerics.Vector2(100, 140), Colors.White);
-            args.DrawingSession.DrawText(Statics.TextString, new System.Numerics.Vector2(100, 160), Colors.White);
+            args.DrawingSession.DrawText("Calculate count: " + Statics.CalculateCount.ToString(), new Vector2(10, 600), Colors.White);
+            args.DrawingSession.DrawText("Button click count: " + Statics.ButtonClickCount.ToString(), new Vector2(10, 620), Colors.White);
+            args.DrawingSession.DrawText(Statics.ControlInFocusString, new Vector2(10, 640), Colors.White);
+            args.DrawingSession.DrawText(Statics.TextString, new Vector2(10, 660), Colors.White);
+            args.DrawingSession.DrawText(Statics.UpdateString, new Vector2(10, 680), Colors.White);
         }
     }
 }

@@ -71,18 +71,15 @@ namespace win2d_text_game
                 DrawCursor(args);
             }
         }
-
         private void DrawBorder(CanvasAnimatedDrawEventArgs args)
         {
             args.DrawingSession.DrawRectangle(Border, Color);
         }
-
         private void DrawText(CanvasAnimatedDrawEventArgs args)
         {
             if (Text == null) { return; }
             args.DrawingSession.DrawText(Text, TextPosition, Colors.White, Statics.DefaultFont);
         }
-
         private void DrawCursor(CanvasAnimatedDrawEventArgs args)
         {
             if (bUpdateCursorPosition)

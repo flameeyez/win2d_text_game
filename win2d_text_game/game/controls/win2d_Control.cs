@@ -12,7 +12,7 @@ using Windows.UI.Input;
 
 namespace win2d_text_game
 {
-    public delegate void ClickEventHandler();
+    public delegate void ClickEventHandler(PointerPoint point);
 
     public abstract class win2d_Control
     {
@@ -47,12 +47,18 @@ namespace win2d_text_game
             return true;
         }
 
-        protected void OnClick() { if (Click != null) { Click(); } }
+        protected void OnClick(PointerPoint point) { if (Click != null) { Click(point); } }
 
         public virtual bool KeyDown(VirtualKey virtualKey) { return false; }
         public virtual bool KeyUp(VirtualKey virtualKey) { return false; }
         public virtual void MouseDown(PointerPoint p) { }
-        public virtual void MouseUp(PointerPoint p) { }
+        public virtual void MouseUp(PointerPoint p)
+        {
+            if (HasFocus)
+            {
+                OnClick(p);
+            }
+        }
         public virtual void MouseEnter(PointerPoint p) { }
         public virtual void MouseLeave() { }
 
