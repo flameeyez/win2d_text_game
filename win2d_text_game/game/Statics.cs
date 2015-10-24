@@ -14,6 +14,7 @@ namespace win2d_text_game
 {
     public static class Statics
     {
+        public static int DebugStringsCount = 0;
         public static int CalculateCount = 0;
         public static int MaxStringWidth = 0;
         public static int ButtonClickCount = 0;

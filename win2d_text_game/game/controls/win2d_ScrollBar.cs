@@ -8,6 +8,7 @@ using System.Numerics;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Input;
+using Microsoft.Graphics.Canvas;
 
 namespace win2d_text_game
 {
@@ -18,13 +19,23 @@ namespace win2d_text_game
         private Rect TopArrowRect { get; set; }
         private Rect MiddleRect { get; set; }
         private Rect BottomArrowRect { get; set; }
+        private Rect BorderRect { get; set; }
 
         public event ScrollEventHandler ScrollUp;
         public event ScrollEventHandler ScrollDown;
 
         public win2d_ScrollBar(Vector2 position, int width, int height) : base(position, width, height)
         {
-            // calculate rects
+            Position = position;
+            Width = width;
+            Height = height;
+
+            TopArrowRect = new Rect(Position.X, Position.Y, Width, Width);
+            MiddleRect = new Rect(Position.X, Position.Y + Width, Width, Height - Width * 2);
+            BottomArrowRect = new Rect(Position.X, Position.Y + Height - Width, Width, Width);
+            BorderRect = new Rect(Position.X, Position.Y, Width, Height);
+
+            Click += Win2d_ScrollBar_Click;
         }
 
         private void Win2d_ScrollBar_Click(PointerPoint point)
@@ -65,8 +76,7 @@ namespace win2d_text_game
             DrawTopArrow(args);
             DrawMiddle(args);
             DrawBottomArrow(args);
-
-            Click += Win2d_ScrollBar_Click;
+            DrawBorder(args);
         }
 
         private void DrawTopArrow(CanvasAnimatedDrawEventArgs args)
@@ -95,6 +105,11 @@ namespace win2d_text_game
 
                 // draw arrow
             }
+        }
+
+        private void DrawBorder(CanvasAnimatedDrawEventArgs args)
+        {
+            args.DrawingSession.DrawRectangle(BorderRect, Colors.White);
         }
         #endregion
     }

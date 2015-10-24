@@ -31,6 +31,7 @@ namespace win2d_text_game
         win2d_Textbox textbox;
         win2d_Button button;
         win2d_Textblock textblock;
+        win2d_ScrollBar scrollbar;
 
         List<win2d_Control> Controls = new List<win2d_Control>();
         win2d_Control ControlInFocus;
@@ -133,6 +134,7 @@ namespace win2d_text_game
             }
 
             Statics.UpdateString = "Update time: " + args.Timing.ElapsedTime.TotalMilliseconds.ToString() + "ms";
+            Statics.DebugStringsCount = textblock.DebugStringsCount;
         }
 
         private void canvasMain_CreateResources(CanvasAnimatedControl sender, CanvasCreateResourcesEventArgs args)
@@ -146,11 +148,25 @@ namespace win2d_text_game
             button = new win2d_Button(sender.Device, new Vector2(textboxPosition.X + textbox.Width + 20, textboxPosition.Y), 100, textbox.Height, "Test button!");
             button.Click += Button_Click;
 
-            textblock = new win2d_Textblock(new Vector2(200, 20), textbox.Width + 20 + button.Width, clientHeight - textbox.Height - 40);
+            textblock = new win2d_Textblock(new Vector2(200, 20), textbox.Width + 20 + button.Width, 110);// clientHeight - textbox.Height - 40);
+            scrollbar = new win2d_ScrollBar(new Vector2(textblock.Position.X + textblock.Width, textblock.Position.Y), 20, textblock.Height);
+            scrollbar.ScrollUp += Scrollbar_ScrollUp;
+            scrollbar.ScrollDown += Scrollbar_ScrollDown;
 
             Controls.Add(textbox);
             Controls.Add(button);
             Controls.Add(textblock);
+            Controls.Add(scrollbar);
+        }
+
+        private void Scrollbar_ScrollDown()
+        {
+            textblock.ScrollDown();
+        }
+
+        private void Scrollbar_ScrollUp()
+        {
+            textblock.ScrollUp();
         }
 
         private void Button_Click(PointerPoint point)
@@ -179,6 +195,7 @@ namespace win2d_text_game
             args.DrawingSession.DrawText(Statics.ControlInFocusString, new Vector2(10, 640), Colors.White);
             args.DrawingSession.DrawText(Statics.TextString, new Vector2(10, 660), Colors.White);
             args.DrawingSession.DrawText(Statics.UpdateString, new Vector2(10, 680), Colors.White);
+            args.DrawingSession.DrawText("Strings count: " + Statics.DebugStringsCount.ToString(), new Vector2(10, 700), Colors.White);
         }
     }
 }

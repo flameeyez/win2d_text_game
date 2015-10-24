@@ -20,43 +20,25 @@ namespace win2d_text_game
         private Rect Border { get; set; }
 
         private win2d_TextblockStringCollection Strings;
-        private win2d_ScrollBar ScrollBar { get; set; }
+        public int DebugStringsCount
+        {
+            get
+            {
+                return Strings.Count;
+            }
+        }
 
         public win2d_Textblock(Vector2 position, int width, int height) : base(position, width, height)
         {
             Border = new Rect(Position.X, Position.Y, Width, Height);
-            Strings = new win2d_TextblockStringCollection(new Vector2(Position.X + PaddingX, Position.Y + PaddingY));
-            Click += Win2d_Textblock_Click;
-
-            // calculate scrollbar layout
-            ScrollBar = new win2d_ScrollBar(Vector2.Zero, 0, 0);
-            ScrollBar.ScrollUp += ScrollBar_ScrollUp;
-            ScrollBar.ScrollDown += ScrollBar_ScrollDown;
+            Strings = new win2d_TextblockStringCollection(new Vector2(Position.X + PaddingX, Position.Y + PaddingY), Height - PaddingY * 2);
         }
 
-        private void ScrollBar_ScrollDown()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ScrollBar_ScrollUp()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void Win2d_Textblock_Click(PointerPoint point)
-        {
-            if(ScrollBar != null && ScrollBar.HitTest(point.Position))
-            {
-                // ScrollBar.OnClick(point);
-            }
-        }
-
+        #region Drawing
         public override void Draw(CanvasAnimatedDrawEventArgs args)
         {
             DrawBorder(args);
             DrawStrings(args);
-            DrawScrollBar(args);
         }
 
         private void DrawBorder(CanvasAnimatedDrawEventArgs args)
@@ -69,20 +51,26 @@ namespace win2d_text_game
 
         private void DrawStrings(CanvasAnimatedDrawEventArgs args)
         {
-            Strings.Draw(args);
-        }
-
-        private void DrawScrollBar(CanvasAnimatedDrawEventArgs args)
-        {
-            if (ScrollBar != null)
+            lock (Strings)
             {
-                ScrollBar.Draw(args);
+                Strings.Draw(args);
             }
         }
+        #endregion
 
+        #region Append
         public void Append(CanvasDevice device, string str)
         {
-            Strings.Add(device, str);
+            lock (Strings)
+            {
+                Strings.Add(device, str);
+            }
         }
+        #endregion
+
+        #region Scrolling
+        public void ScrollUp() { Strings.ScrollUp(); }
+        public void ScrollDown() { Strings.ScrollDown(); }
+        #endregion
     }
 }

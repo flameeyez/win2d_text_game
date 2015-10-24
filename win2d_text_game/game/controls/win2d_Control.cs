@@ -52,13 +52,7 @@ namespace win2d_text_game
         public virtual bool KeyDown(VirtualKey virtualKey) { return false; }
         public virtual bool KeyUp(VirtualKey virtualKey) { return false; }
         public virtual void MouseDown(PointerPoint p) { }
-        public virtual void MouseUp(PointerPoint p)
-        {
-            if (HasFocus)
-            {
-                OnClick(p);
-            }
-        }
+        public virtual void MouseUp(PointerPoint p) { if (HasFocus) { OnClick(p); } }
         public virtual void MouseEnter(PointerPoint p) { }
         public virtual void MouseLeave() { }
 

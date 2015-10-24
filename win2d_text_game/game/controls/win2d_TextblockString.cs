@@ -12,12 +12,12 @@ namespace win2d_text_game
     class win2d_TextblockString
     {
         public CanvasTextLayout Text { get; set; }
-        public Vector2 Position { get; set; }
+        public int Width { get { return (int)Text.LayoutBounds.Width; } }
+        public int Height { get { return (int)Text.LayoutBounds.Height; } }
 
-        public win2d_TextblockString(CanvasDevice device, string text, Vector2 position)
+        public win2d_TextblockString(CanvasDevice device, string text)
         {
             Text = new CanvasTextLayout(device, text, Statics.DefaultFont, 0, 0);
-            Position = position;
         }
     }
 }
