@@ -28,10 +28,10 @@ namespace win2d_text_game
             }
         }
 
-        public win2d_Textblock(Vector2 position, int width, int height) : base(position, width, height)
+        public win2d_Textblock(Vector2 position, int width, int height, bool scrolltobottomonappend = false) : base(position, width, height)
         {
             Border = new Rect(Position.X, Position.Y, Width, Height);
-            Strings = new win2d_TextblockStringCollection(new Vector2(Position.X + PaddingX, Position.Y + PaddingY), Height - PaddingY * 2);
+            Strings = new win2d_TextblockStringCollection(new Vector2(Position.X + PaddingX, Position.Y + PaddingY), Height - PaddingY * 2, scrolltobottomonappend);
         }
 
         #region Drawing

@@ -19,6 +19,7 @@ namespace win2d_text_game
         private Vector2 StringsPosition { get; set; }
         private static int StringPaddingY = 5;
         private int nFirstStringToDraw = 0;
+        private int nLastStringToDraw = -1;
 
         // private int DrawingWidth { get; set; }
         private int DrawingHeight { get; set; }
@@ -26,28 +27,43 @@ namespace win2d_text_game
         private int _totalstringsheight = 0;
         private int TotalStringsHeight { get { return _totalstringsheight; } }
 
-        public win2d_TextblockStringCollection(Vector2 position, int drawingheight)
+        private bool ScrollToBottomOnAppend { get; set; }
+
+        public win2d_TextblockStringCollection(Vector2 position, int drawingheight, bool scrolltobottomonappend = false)
         {
             StringsPosition = position;
             DrawingHeight = drawingheight;
+            ScrollToBottomOnAppend = scrolltobottomonappend;
         }
 
+        #region Drawing
         public void Draw(CanvasAnimatedDrawEventArgs args)
         {
-            if(Strings.Count == 0) { return; }
-            if(CanDrawAllStrings())
+            if (Strings.Count == 0) { return; }
+            if (CanDrawAllStrings())
             {
                 DrawAllStrings(args);
             }
-            else
+            else if (nLastStringToDraw == -1)
             {
                 int i = nFirstStringToDraw;
                 float fCurrentY = StringsPosition.Y;
-                while(i < Strings.Count && fCurrentY + Strings[i].Height < StringsPosition.Y + DrawingHeight)
+                while (i < Strings.Count && fCurrentY + Strings[i].Height < StringsPosition.Y + DrawingHeight)
                 {
                     args.DrawingSession.DrawTextLayout(Strings[i].Text, new Vector2(StringsPosition.X, fCurrentY), Colors.White);
                     fCurrentY += Strings[i].Height + StringPaddingY;
                     i++;
+                }
+
+                nLastStringToDraw = --i;
+            }
+            else
+            {
+                float fCurrentY = StringsPosition.Y;
+                for (int i = nFirstStringToDraw; i <= nLastStringToDraw; i++)
+                {
+                    args.DrawingSession.DrawTextLayout(Strings[i].Text, new Vector2(StringsPosition.X, fCurrentY), Colors.White);
+                    fCurrentY += Strings[i].Height + StringPaddingY;
                 }
             }
         }
@@ -63,49 +79,69 @@ namespace win2d_text_game
             }
         }
 
+        private bool CanDrawAllStrings()
+        {
+            return TotalStringsHeight <= DrawingHeight;
+        }
+        #endregion
+
+        #region Add
         public void Add(CanvasDevice device, string str)
         {
             win2d_TextblockString s = new win2d_TextblockString(device, str);
             Strings.Add(s);
             _totalstringsheight += s.Height + StringPaddingY;
 
-            // if(ScrollToBottom)
+            if(ScrollToBottomOnAppend)
+            {
+                ScrollToBottom();
+            }
         }
+        #endregion
 
-        private bool CanDrawAllStrings()
-        {
-            return TotalStringsHeight <= DrawingHeight;
-        }
-
+        #region Scrolling
         public void ScrollUp()
         {
-            if (nFirstStringToDraw > 0) { nFirstStringToDraw--; }
+            if (nFirstStringToDraw > 0)
+            {
+                nFirstStringToDraw--;
+                nLastStringToDraw = -1;
+            }
         }
 
         public void ScrollDown()
         {
-            // need to figure out how many end strings can be drawn
-
-            if(nFirstStringToDraw < Strings.Count - 1)
+            if (nFirstStringToDraw < Strings.Count - 1 && nLastStringToDraw != Strings.Count - 1)
             {
                 nFirstStringToDraw++;
+                nLastStringToDraw = -1;
             }
         }
 
-        //private int FirstStringInView(int nMaxHeight)
-        //{
-        //    if (Strings.Count == 0) { return -1; }
+        public void ScrollToBottom()
+        {
+            if (Strings.Count == 0) { return; }
+            if ((CanDrawAllStrings() && Strings.Count > 0)
+                || (Strings.Count == 1))
+            {
+                nFirstStringToDraw = 0;
+                nLastStringToDraw = 0;
+                return;
+            }
+            else
+            {
+                int nHeight = Strings[Strings.Count - 1].Height;
+                int i = Strings.Count - 2;
+                while (nHeight + Strings[i].Height + StringPaddingY <= DrawingHeight)
+                {
+                    nHeight += Strings[i].Height + StringPaddingY;
+                    i--;
+                }
 
-        //    int nCurrentHeight = 0;
-        //    int i = Strings.Count - 1;
-
-        //    while(i >= 0 && nCurrentHeight <= nMaxHeight)
-        //    {
-        //        nCurrentHeight += Strings[i].Height;
-        //        i--;
-        //    }
-
-        //    return i;
-        //}
+                nFirstStringToDraw = ++i;
+                nLastStringToDraw = -1;
+            }
+        }
+        #endregion
     }
 }

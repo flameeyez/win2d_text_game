@@ -148,7 +148,11 @@ namespace win2d_text_game
             button = new win2d_Button(sender.Device, new Vector2(textboxPosition.X + textbox.Width + 20, textboxPosition.Y), 100, textbox.Height, "Test button!");
             button.Click += Button_Click;
 
-            textblock = new win2d_Textblock(new Vector2(200, 20), textbox.Width + 20 + button.Width, 110);// clientHeight - textbox.Height - 40);
+            textblock = new win2d_Textblock(new Vector2(200, 20), textbox.Width + 20 + button.Width, 110, true);// clientHeight - textbox.Height - 40);
+            for(int i = 0; i < 100; i++)
+            {
+                textblock.Append(sender.Device, i.ToString());
+            }
             scrollbar = new win2d_ScrollBar(new Vector2(textblock.Position.X + textblock.Width, textblock.Position.Y), 20, textblock.Height);
             scrollbar.ScrollUp += Scrollbar_ScrollUp;
             scrollbar.ScrollDown += Scrollbar_ScrollDown;
