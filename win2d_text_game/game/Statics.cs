@@ -17,7 +17,7 @@ namespace win2d_text_game
         public static int DebugStringsCount = 0;
         public static int DebugCalculateCount = 0;
         public static int DebugButtonClickCount = 0;
-        public static string DebugControlInFocusString = "Control in focus: N/A";
+        public static string DebugControlInFocusString = "Focus: N/A";
         public static string DebugUpdateTimeString = "Update time: N/A";
 
         public static Random Random = new Random(DateTime.Now.Millisecond);

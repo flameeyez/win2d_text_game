@@ -8,7 +8,8 @@
     xmlns:canvas="using:Microsoft.Graphics.Canvas.UI.Xaml"
     mc:Ignorable="d">
 
-    <Grid x:Name="gridMain" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" PointerReleased="gridMain_PointerReleased" PointerMoved="gridMain_PointerMoved" PointerPressed="gridMain_PointerPressed">
-        <canvas:CanvasAnimatedControl x:Name="canvasMain" Draw="canvasMain_Draw" Update="canvasMain_Update" ClearColor="CornflowerBlue" CreateResources="canvasMain_CreateResources" />
+    <Grid x:Name="gridMain" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <canvas:CanvasAnimatedControl x:Name="canvasMain" Draw="canvasMain_Draw" Update="canvasMain_Update" ClearColor="CornflowerBlue" CreateResources="canvasMain_CreateResources" 
+               PointerPressed="canvasMain_PointerPressed" PointerMoved="canvasMain_PointerMoved" PointerReleased="canvasMain_PointerReleased" PointerWheelChanged="canvasMain_PointerWheelChanged" />
     </Grid>
 </Page>

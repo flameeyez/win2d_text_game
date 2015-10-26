@@ -18,6 +18,7 @@ namespace win2d_text_game
 
         private Vector2 StringsPosition { get; set; }
         private static int StringPaddingY = 5;
+
         private int nFirstStringToDraw = 0;
         private int nLastStringToDraw = -1;
 
@@ -111,7 +112,7 @@ namespace win2d_text_game
 
         public void ScrollDown()
         {
-            if (nFirstStringToDraw < Strings.Count - 1 && nLastStringToDraw != Strings.Count - 1)
+            if (nFirstStringToDraw < Strings.Count - 1 && nLastStringToDraw != Strings.Count - 1 && nLastStringToDraw != -1)
             {
                 nFirstStringToDraw++;
                 nLastStringToDraw = -1;

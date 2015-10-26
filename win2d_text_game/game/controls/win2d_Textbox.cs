@@ -19,7 +19,6 @@ namespace win2d_text_game
         private static int PaddingX = 10;
         private static int PaddingY = 10;
 
-        // CanvasTextLayout?
         private string _text;
         public string Text
         {
@@ -29,17 +28,21 @@ namespace win2d_text_game
             }
             set
             {
-                _text = value;
-                bUpdateCursorPosition = true;
+                if (_text != value)
+                {
+                    _text = value;
+                    bRecalculateCursorPosition = true;
+                }
             }
         }
+        
         // public int MaxTextLength { get; set; }
 
-        private win2d_TextboxCursor Cursor { get; set; }
-        private int CursorStringIndex { get; set; }
-        private bool bUpdateCursorPosition { get; set; }
-        private Rect Border { get; set; }
-        private Vector2 TextPosition { get; set; }
+        private win2d_TextboxCursor Cursor;
+        private int CursorStringIndex;
+        private bool bRecalculateCursorPosition;
+        private Rect Border;
+        private Vector2 TextPosition;
 
         private HashSet<VirtualKey> KeyboardState = new HashSet<VirtualKey>();
 
@@ -57,7 +60,7 @@ namespace win2d_text_game
 
             Cursor = new win2d_TextboxCursor(device, Colors.White);
             CursorStringIndex = 0;
-            bUpdateCursorPosition = true;
+            bRecalculateCursorPosition = true;
         }
 
         #region Draw
@@ -82,7 +85,7 @@ namespace win2d_text_game
         }
         private void DrawCursor(CanvasAnimatedDrawEventArgs args)
         {
-            if (bUpdateCursorPosition)
+            if (bRecalculateCursorPosition)
             {
                 Cursor.Position = CalculateCursorPosition(args.DrawingSession);
             }
@@ -101,7 +104,7 @@ namespace win2d_text_game
                 {
                     Text = Text.Substring(0, Text.Length - 1);
                     --CursorStringIndex;
-                    bUpdateCursorPosition = true;
+                    bRecalculateCursorPosition = true;
                 }
             }
             else
@@ -138,7 +141,7 @@ namespace win2d_text_game
                 Text += s;
 
                 ++CursorStringIndex;
-                bUpdateCursorPosition = true;
+                bRecalculateCursorPosition = true;
             }
 
             return true;
@@ -148,7 +151,7 @@ namespace win2d_text_game
         private Vector2 CalculateCursorPosition(ICanvasResourceCreator resourceCreator)
         {
             Statics.DebugCalculateCount++;
-            bUpdateCursorPosition = false;
+            bRecalculateCursorPosition = false;
 
             if (Text == null || Text.Length == 0)
             {

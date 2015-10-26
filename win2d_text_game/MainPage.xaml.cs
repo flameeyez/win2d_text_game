@@ -53,21 +53,21 @@ namespace win2d_text_game
         #endregion
 
         #region Mouse Handling
-        private void gridMain_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private void canvasMain_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            if(ControlInFocus != null)
+            if (ControlInFocus != null)
             {
                 ControlInFocus.LoseFocus();
                 ControlInFocus = null;
             }
-            
-            PointerPoint p = e.GetCurrentPoint(this);
+
+            PointerPoint p = e.GetCurrentPoint(canvasMain);
             foreach (win2d_Control control in Controls)
             {
                 if (control.HitTest(p.Position))
                 {
                     // START DEBUG
-                    Statics.DebugControlInFocusString = "Control in focus: " + control.ToString();
+                    Statics.DebugControlInFocusString = "Focus: " + control.ToString();
                     // END DEBUG
 
                     control.MouseDown(p);
@@ -80,26 +80,13 @@ namespace win2d_text_game
 
             // no hits
             // START DEBUG
-            Statics.DebugControlInFocusString = "Control in focus: N/A";
+            Statics.DebugControlInFocusString = "Focus: N/A";
             // END DEBUG
         }
 
-        private void gridMain_PointerReleased(object sender, PointerRoutedEventArgs e)
+        private void canvasMain_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            PointerPoint p = e.GetCurrentPoint(this);
-
-            foreach (win2d_Control control in Controls)
-            {
-                if (control.HitTest(p.Position))
-                {
-                    control.MouseUp(p);
-                }
-            }
-        }
-
-        private void gridMain_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            PointerPoint p = e.GetCurrentPoint(this);
+            PointerPoint p = e.GetCurrentPoint(canvasMain);
 
             foreach (win2d_Control control in Controls)
             {
@@ -113,9 +100,39 @@ namespace win2d_text_game
                 }
             }
         }
+
+        private void canvasMain_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            PointerPoint p = e.GetCurrentPoint(canvasMain);
+
+            foreach (win2d_Control control in Controls)
+            {
+                if (control.HitTest(p.Position))
+                {
+                    control.MouseUp(p);
+                }
+            }
+        }
+
+        private void canvasMain_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            PointerPoint p = e.GetCurrentPoint(canvasMain);
+
+            if(textblock.HitTest(p.Position))
+            {
+                if (p.Properties.MouseWheelDelta < 0)
+                {
+                    textblock.ScrollDown();
+                }
+                else if (p.Properties.MouseWheelDelta > 0)
+                {
+                    textblock.ScrollUp();
+                }
+            }
+        }
         #endregion
 
-        #region Canvas Events
+        #region Draw/Update
         private void canvasMain_Draw(ICanvasAnimatedControl sender, CanvasAnimatedDrawEventArgs args)
         {
             foreach (win2d_Control control in Controls)
@@ -140,7 +157,9 @@ namespace win2d_text_game
             Statics.DebugStringsCount = textblock.DebugStringsCount;
             // END DEBUG
         }
+        #endregion
 
+        #region Initialization
         private void canvasMain_CreateResources(CanvasAnimatedControl sender, CanvasCreateResourcesEventArgs args)
         {
             int clientWidth = (int)sender.Size.Width;
@@ -151,16 +170,16 @@ namespace win2d_text_game
             Statics.DownArrow = new CanvasTextLayout(sender.Device, "\u2193", Statics.DefaultFont, 0, 0);
             Statics.DoubleDownArrow = new CanvasTextLayout(sender.Device, "\u21a1", Statics.DefaultFont, 0, 0);
 
-            Vector2 textboxPosition = new Vector2(200, clientHeight - 50);
+            Vector2 textboxPosition = new Vector2(20, clientHeight - 50);
             textbox = new win2d_Textbox(sender.Device, textboxPosition, 600);
 
             button = new win2d_Button(sender.Device, new Vector2(textboxPosition.X + textbox.Width + 20, textboxPosition.Y), 100, textbox.Height, "Test button!");
             button.Click += Button_Click;
 
-            textblock = new win2d_Textblock(new Vector2(200, 20), textbox.Width + 20 + button.Width, clientHeight - textbox.Height - 40, true);
+            textblock = new win2d_Textblock(new Vector2(20, 20), textbox.Width + 20 + button.Width, clientHeight - textbox.Height - 40, true);
             
             // START DEBUG
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 textblock.Append(sender.Device, i.ToString());
             }
@@ -210,11 +229,11 @@ namespace win2d_text_game
         #region Debug
         private void DrawDebug(CanvasAnimatedDrawEventArgs args)
         {
-            args.DrawingSession.DrawText("Calculate count: " + Statics.DebugCalculateCount.ToString(), new Vector2(10, 600), Colors.White);
-            args.DrawingSession.DrawText("Button click count: " + Statics.DebugButtonClickCount.ToString(), new Vector2(10, 620), Colors.White);
-            args.DrawingSession.DrawText(Statics.DebugControlInFocusString, new Vector2(10, 640), Colors.White);
-            args.DrawingSession.DrawText(Statics.DebugUpdateTimeString, new Vector2(10, 660), Colors.White);
-            args.DrawingSession.DrawText("Strings count: " + Statics.DebugStringsCount.ToString(), new Vector2(10, 680), Colors.White);
+            args.DrawingSession.DrawText("Calculate count: " + Statics.DebugCalculateCount.ToString(), new Vector2(800, 20), Colors.White);
+            args.DrawingSession.DrawText("Button click count: " + Statics.DebugButtonClickCount.ToString(), new Vector2(800, 40), Colors.White);
+            args.DrawingSession.DrawText(Statics.DebugControlInFocusString, new Vector2(800, 60), Colors.White);
+            args.DrawingSession.DrawText(Statics.DebugUpdateTimeString, new Vector2(800, 80), Colors.White);
+            args.DrawingSession.DrawText("Strings count: " + Statics.DebugStringsCount.ToString(), new Vector2(800, 100), Colors.White);
         }
         #endregion
     }
