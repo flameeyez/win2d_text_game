@@ -71,6 +71,8 @@ namespace win2d_text_game
         #region Scrolling
         public void ScrollUp() { Strings.ScrollUp(); }
         public void ScrollDown() { Strings.ScrollDown(); }
+        public void ScrollToTop() { Strings.ScrollToTop(); }
+        public void ScrollToBottom() { Strings.ScrollToBottom(); }
         #endregion
     }
 }

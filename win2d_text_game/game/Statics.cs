@@ -15,13 +15,22 @@ namespace win2d_text_game
     public static class Statics
     {
         public static int DebugStringsCount = 0;
-        public static int CalculateCount = 0;
-        public static int MaxStringWidth = 0;
-        public static int ButtonClickCount = 0;
-        public static string ControlInFocusString = "Control in focus: N/A";
-        public static string TextString = "Test!";
-        public static string UpdateString = "Update time: N/A";
+        public static int DebugCalculateCount = 0;
+        public static int DebugButtonClickCount = 0;
+        public static string DebugControlInFocusString = "Control in focus: N/A";
+        public static string DebugUpdateTimeString = "Update time: N/A";
 
+        public static Random Random = new Random(DateTime.Now.Millisecond);
+        public static CanvasTextFormat DefaultFont;
+
+        public static CanvasTextLayout UpArrow;
+        public static CanvasTextLayout DoubleUpArrow;
+        public static CanvasTextLayout DownArrow;
+        public static CanvasTextLayout DoubleDownArrow;
+
+        ///////////////////////////////////////////////
+
+        #region Old Project Stuff
         public static int MouseX = 0;
         public static int MouseY = 0;
         public static int FrameCount = 0;
@@ -33,33 +42,16 @@ namespace win2d_text_game
         public static int LeftColumnWidth;
         public static Vector2 ColumnDividerTop;
         public static Vector2 ColumnDividerBottom;
-
-        public static int CanvasHeight;
-
-        public static Vector2 MapPosition = new Vector2(0, 0);
-
-        public static CanvasBitmap CrownImage;
-
-        // probability that region will continue to try to expand past minimum size
-        // calculated once for each tile added
-        // e.g. a tile that has just met minimum size requirements has an n% chance of trying to add an additional tile (will fail if attempted add is already occupied),
-        //  then an n% chance of attempting to add another tile after that, and so on
-        public static int ProbabilityOfExpansion = 0;
-        public static int MinimumRegionSize = 100;
-        public static int MergeThreshold = 500;
-
-        // timing
-        public static int MapUpdateThreshold = 0; //500;
-        public static int PauseBetweenBattlesMilliseconds = 500;
-
-        public static Random Random = new Random(DateTime.Now.Millisecond);
-        public static CanvasTextFormat DefaultFont = new CanvasTextFormat();
+        #endregion
 
         static Statics()
         {
+            DefaultFont = new CanvasTextFormat();
             DefaultFont.FontFamily = "Arial";
             DefaultFont.FontSize = 14;
             DefaultFont.WordWrapping = CanvasWordWrapping.NoWrap;
+
+            // CanvasTextLayout objects are initialized in CreateResources
         }
 
         public static Color RandomColor()
@@ -76,6 +68,7 @@ namespace win2d_text_game
             return array[Statics.Random.Next(array.Length)];
         }
 
+        #region VirtualKeyToString
         [DllImport("user32.dll")]
         public static extern int ToUnicode(uint virtualKeyCode, uint scanCode,
             byte[] keyboardState,
@@ -96,6 +89,17 @@ namespace win2d_text_game
             }
             ToUnicode((uint)keys, 0, keyboardState, buf, 256, 0);
             return buf.ToString();
+        }
+        #endregion
+
+        public static bool HitTestRect(Rect rect, Point point)
+        {
+            if (point.X < rect.X) { return false; }
+            if (point.X >= rect.X + rect.Width) { return false; }
+            if (point.Y < rect.Y) { return false; }
+            if (point.Y >= rect.Y + rect.Height) { return false; }
+
+            return true;
         }
     }
 }

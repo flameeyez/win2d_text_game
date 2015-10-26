@@ -147,7 +147,7 @@ namespace win2d_text_game
 
         private Vector2 CalculateCursorPosition(ICanvasResourceCreator resourceCreator)
         {
-            Statics.CalculateCount++;
+            Statics.DebugCalculateCount++;
             bUpdateCursorPosition = false;
 
             if (Text == null || Text.Length == 0)

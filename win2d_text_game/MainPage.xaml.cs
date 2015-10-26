@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -14,18 +15,14 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using Windows.System;
 using Windows.UI.Input;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace win2d_text_game
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
         win2d_Textbox textbox;
@@ -44,32 +41,34 @@ namespace win2d_text_game
             Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
         }
 
-        private void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
+        #region Keyboard Handling
+        private void CoreWindow_KeyDown(CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
         {
-            if (ControlInFocus != null)
-            {
-                ControlInFocus.KeyDown(args.VirtualKey);
-            }
+            if (ControlInFocus != null) { ControlInFocus.KeyDown(args.VirtualKey); }
         }
-
-        private void CoreWindow_KeyUp(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
+        private void CoreWindow_KeyUp(CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
         {
-            if (ControlInFocus != null)
-            {
-                ControlInFocus.KeyUp(args.VirtualKey);
-            }
+            if (ControlInFocus != null) { ControlInFocus.KeyUp(args.VirtualKey); }
         }
+        #endregion
 
+        #region Mouse Handling
         private void gridMain_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            ControlInFocus = null;
+            if(ControlInFocus != null)
+            {
+                ControlInFocus.LoseFocus();
+                ControlInFocus = null;
+            }
+            
             PointerPoint p = e.GetCurrentPoint(this);
-
             foreach (win2d_Control control in Controls)
             {
                 if (control.HitTest(p.Position))
                 {
-                    Statics.ControlInFocusString = "Control in focus: " + control.ToString();
+                    // START DEBUG
+                    Statics.DebugControlInFocusString = "Control in focus: " + control.ToString();
+                    // END DEBUG
 
                     control.MouseDown(p);
                     control.GiveFocus();
@@ -77,13 +76,12 @@ namespace win2d_text_game
 
                     return;
                 }
-                else
-                {
-                    control.LoseFocus();
-                }
             }
 
-            Statics.ControlInFocusString = "Control in focus: N/A";
+            // no hits
+            // START DEBUG
+            Statics.DebugControlInFocusString = "Control in focus: N/A";
+            // END DEBUG
         }
 
         private void gridMain_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -92,7 +90,7 @@ namespace win2d_text_game
 
             foreach (win2d_Control control in Controls)
             {
-                if(control.HitTest(p.Position))
+                if (control.HitTest(p.Position))
                 {
                     control.MouseUp(p);
                 }
@@ -105,7 +103,7 @@ namespace win2d_text_game
 
             foreach (win2d_Control control in Controls)
             {
-                if(control.HitTest(p.Position))
+                if (control.HitTest(p.Position))
                 {
                     control.MouseEnter(p);
                 }
@@ -115,7 +113,9 @@ namespace win2d_text_game
                 }
             }
         }
+        #endregion
 
+        #region Canvas Events
         private void canvasMain_Draw(ICanvasAnimatedControl sender, CanvasAnimatedDrawEventArgs args)
         {
             foreach (win2d_Control control in Controls)
@@ -123,7 +123,9 @@ namespace win2d_text_game
                 control.Draw(args);
             }
 
+            // START DEBUG
             DrawDebug(args);
+            // END DEBUG
         }
 
         private void canvasMain_Update(ICanvasAnimatedControl sender, CanvasAnimatedUpdateEventArgs args)
@@ -133,8 +135,10 @@ namespace win2d_text_game
                 control.Update(args);
             }
 
-            Statics.UpdateString = "Update time: " + args.Timing.ElapsedTime.TotalMilliseconds.ToString() + "ms";
+            // START DEBUG
+            Statics.DebugUpdateTimeString = "Update time: " + args.Timing.ElapsedTime.TotalMilliseconds.ToString() + "ms";
             Statics.DebugStringsCount = textblock.DebugStringsCount;
+            // END DEBUG
         }
 
         private void canvasMain_CreateResources(CanvasAnimatedControl sender, CanvasCreateResourcesEventArgs args)
@@ -142,40 +146,50 @@ namespace win2d_text_game
             int clientWidth = (int)sender.Size.Width;
             int clientHeight = (int)sender.Size.Height;
 
+            Statics.UpArrow = new CanvasTextLayout(sender.Device, "\u2191", Statics.DefaultFont, 0, 0);
+            Statics.DoubleUpArrow = new CanvasTextLayout(sender.Device, "\u219f", Statics.DefaultFont, 0, 0);
+            Statics.DownArrow = new CanvasTextLayout(sender.Device, "\u2193", Statics.DefaultFont, 0, 0);
+            Statics.DoubleDownArrow = new CanvasTextLayout(sender.Device, "\u21a1", Statics.DefaultFont, 0, 0);
+
             Vector2 textboxPosition = new Vector2(200, clientHeight - 50);
             textbox = new win2d_Textbox(sender.Device, textboxPosition, 600);
 
             button = new win2d_Button(sender.Device, new Vector2(textboxPosition.X + textbox.Width + 20, textboxPosition.Y), 100, textbox.Height, "Test button!");
             button.Click += Button_Click;
 
-            textblock = new win2d_Textblock(new Vector2(200, 20), textbox.Width + 20 + button.Width, 110, true);// clientHeight - textbox.Height - 40);
-            for(int i = 0; i < 100; i++)
+            textblock = new win2d_Textblock(new Vector2(200, 20), textbox.Width + 20 + button.Width, clientHeight - textbox.Height - 40, true);
+            
+            // START DEBUG
+            for (int i = 0; i < 100; i++)
             {
                 textblock.Append(sender.Device, i.ToString());
             }
+            // END DEBUG
+
             scrollbar = new win2d_ScrollBar(new Vector2(textblock.Position.X + textblock.Width, textblock.Position.Y), 20, textblock.Height);
             scrollbar.ScrollUp += Scrollbar_ScrollUp;
             scrollbar.ScrollDown += Scrollbar_ScrollDown;
+            scrollbar.ScrollToTop += Scrollbar_ScrollToTop;
+            scrollbar.ScrollToBottom += Scrollbar_ScrollToBottom;
 
             Controls.Add(textbox);
             Controls.Add(button);
             Controls.Add(textblock);
             Controls.Add(scrollbar);
         }
+        #endregion
 
-        private void Scrollbar_ScrollDown()
-        {
-            textblock.ScrollDown();
-        }
-
-        private void Scrollbar_ScrollUp()
-        {
-            textblock.ScrollUp();
-        }
+        #region Control Event Handling
+        private void Scrollbar_ScrollToBottom() { textblock.ScrollToBottom(); }
+        private void Scrollbar_ScrollToTop() { textblock.ScrollToTop(); }
+        private void Scrollbar_ScrollDown() { textblock.ScrollDown(); }
+        private void Scrollbar_ScrollUp() { textblock.ScrollUp(); }
 
         private void Button_Click(PointerPoint point)
         {
-            Statics.ButtonClickCount++;
+            // START DEBUG
+            Statics.DebugButtonClickCount++;
+            // END DEBUG
 
             if (textbox.Text != null)
             {
@@ -191,15 +205,17 @@ namespace win2d_text_game
                 textbox.GiveFocus();
             }
         }
+        #endregion
 
+        #region Debug
         private void DrawDebug(CanvasAnimatedDrawEventArgs args)
         {
-            args.DrawingSession.DrawText("Calculate count: " + Statics.CalculateCount.ToString(), new Vector2(10, 600), Colors.White);
-            args.DrawingSession.DrawText("Button click count: " + Statics.ButtonClickCount.ToString(), new Vector2(10, 620), Colors.White);
-            args.DrawingSession.DrawText(Statics.ControlInFocusString, new Vector2(10, 640), Colors.White);
-            args.DrawingSession.DrawText(Statics.TextString, new Vector2(10, 660), Colors.White);
-            args.DrawingSession.DrawText(Statics.UpdateString, new Vector2(10, 680), Colors.White);
-            args.DrawingSession.DrawText("Strings count: " + Statics.DebugStringsCount.ToString(), new Vector2(10, 700), Colors.White);
+            args.DrawingSession.DrawText("Calculate count: " + Statics.DebugCalculateCount.ToString(), new Vector2(10, 600), Colors.White);
+            args.DrawingSession.DrawText("Button click count: " + Statics.DebugButtonClickCount.ToString(), new Vector2(10, 620), Colors.White);
+            args.DrawingSession.DrawText(Statics.DebugControlInFocusString, new Vector2(10, 640), Colors.White);
+            args.DrawingSession.DrawText(Statics.DebugUpdateTimeString, new Vector2(10, 660), Colors.White);
+            args.DrawingSession.DrawText("Strings count: " + Statics.DebugStringsCount.ToString(), new Vector2(10, 680), Colors.White);
         }
+        #endregion
     }
 }

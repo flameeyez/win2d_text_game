@@ -118,6 +118,14 @@ namespace win2d_text_game
             }
         }
 
+        public void ScrollToTop()
+        {
+            if (Strings.Count > 0)
+            {
+                nFirstStringToDraw = 0;
+                nLastStringToDraw = -1;
+            }
+        }
         public void ScrollToBottom()
         {
             if (Strings.Count == 0) { return; }
