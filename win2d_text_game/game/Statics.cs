@@ -22,6 +22,7 @@ namespace win2d_text_game
 
         public static Random Random = new Random(DateTime.Now.Millisecond);
         public static CanvasTextFormat DefaultFont;
+        public static CanvasTextFormat DefaultFontNoWrap;
 
         public static CanvasTextLayout UpArrow;
         public static CanvasTextLayout DoubleUpArrow;
@@ -49,7 +50,12 @@ namespace win2d_text_game
             DefaultFont = new CanvasTextFormat();
             DefaultFont.FontFamily = "Arial";
             DefaultFont.FontSize = 14;
-            DefaultFont.WordWrapping = CanvasWordWrapping.NoWrap;
+            DefaultFont.WordWrapping = CanvasWordWrapping.Wrap; //.NoWrap;
+
+            DefaultFontNoWrap = new CanvasTextFormat();
+            DefaultFontNoWrap.FontFamily = "Arial";
+            DefaultFontNoWrap.FontSize = 14;
+            DefaultFontNoWrap.WordWrapping = CanvasWordWrapping.NoWrap; //.NoWrap;
 
             // CanvasTextLayout objects are initialized in CreateResources
         }

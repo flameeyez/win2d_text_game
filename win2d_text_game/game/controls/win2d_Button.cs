@@ -26,7 +26,7 @@ namespace win2d_text_game
         {
             ButtonRectangle = new Rect(Position.X, Position.Y, Width, Height);
 
-            TextLayout = new CanvasTextLayout(device, text, Statics.DefaultFont, 0, 0);
+            TextLayout = new CanvasTextLayout(device, text, Statics.DefaultFontNoWrap, 0, 0);
             TextLayoutPosition = new Vector2(Position.X + (Width - (float)TextLayout.LayoutBounds.Width) / 2, Position.Y + (Height - (float)TextLayout.LayoutBounds.Height) / 2);
 
             Color = Colors.Gray;

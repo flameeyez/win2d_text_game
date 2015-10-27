@@ -22,7 +22,7 @@ namespace win2d_text_game
         private int nFirstStringToDraw = 0;
         private int nLastStringToDraw = -1;
 
-        // private int DrawingWidth { get; set; }
+        private int DrawingWidth { get; set; }
         private int DrawingHeight { get; set; }
 
         private int _totalstringsheight = 0;
@@ -30,9 +30,10 @@ namespace win2d_text_game
 
         private bool ScrollToBottomOnAppend { get; set; }
 
-        public win2d_TextblockStringCollection(Vector2 position, int drawingheight, bool scrolltobottomonappend = false)
+        public win2d_TextblockStringCollection(Vector2 position, int drawingwidth, int drawingheight, bool scrolltobottomonappend = false)
         {
             StringsPosition = position;
+            DrawingWidth = drawingwidth;
             DrawingHeight = drawingheight;
             ScrollToBottomOnAppend = scrolltobottomonappend;
         }
@@ -89,7 +90,7 @@ namespace win2d_text_game
         #region Add
         public void Add(CanvasDevice device, string str)
         {
-            win2d_TextblockString s = new win2d_TextblockString(device, str);
+            win2d_TextblockString s = new win2d_TextblockString(device, str, DrawingWidth);
             Strings.Add(s);
             _totalstringsheight += s.Height + StringPaddingY;
 

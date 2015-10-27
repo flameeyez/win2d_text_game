@@ -36,7 +36,7 @@ namespace win2d_text_game
             Color = color;
             LastUpdate = TimeSpan.Zero;
 
-            CursorCharacter = new CanvasTextLayout(device, "|", Statics.DefaultFont, 0, 0);
+            CursorCharacter = new CanvasTextLayout(device, "|", Statics.DefaultFontNoWrap, 0, 0);
         }
 
         public void Draw(CanvasAnimatedDrawEventArgs args)
@@ -44,7 +44,6 @@ namespace win2d_text_game
             if (State == CURSOR_STATE.ON)
             {
                 args.DrawingSession.DrawTextLayout(CursorCharacter, Position, Color);
-                // args.DrawingSession.DrawText(CursorCharacter, Position, Color, Statics.DefaultFont);
             }
         }
 
@@ -62,6 +61,12 @@ namespace win2d_text_game
                     case CURSOR_STATE.OFF: State = CURSOR_STATE.ON; break;
                 }
             }
+        }
+
+        public void Reset()
+        {
+            State = CURSOR_STATE.ON;
+            LastUpdate = TimeSpan.Zero;
         }
     }
 }

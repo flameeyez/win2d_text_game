@@ -15,9 +15,9 @@ namespace win2d_text_game
         public int Width { get { return (int)Text.LayoutBounds.Width; } }
         public int Height { get { return (int)Text.LayoutBounds.Height; } }
 
-        public win2d_TextblockString(CanvasDevice device, string text)
+        public win2d_TextblockString(CanvasDevice device, string text, int requestedwidth)
         {
-            Text = new CanvasTextLayout(device, text, Statics.DefaultFont, 0, 0);
+            Text = new CanvasTextLayout(device, text, Statics.DefaultFont, requestedwidth, 0);
         }
     }
 }

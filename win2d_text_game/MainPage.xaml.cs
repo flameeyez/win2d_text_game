@@ -20,6 +20,7 @@ using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using Windows.System;
 using Windows.UI.Input;
+using System.Text;
 
 namespace win2d_text_game
 {
@@ -165,10 +166,10 @@ namespace win2d_text_game
             int clientWidth = (int)sender.Size.Width;
             int clientHeight = (int)sender.Size.Height;
 
-            Statics.UpArrow = new CanvasTextLayout(sender.Device, "\u2191", Statics.DefaultFont, 0, 0);
-            Statics.DoubleUpArrow = new CanvasTextLayout(sender.Device, "\u219f", Statics.DefaultFont, 0, 0);
-            Statics.DownArrow = new CanvasTextLayout(sender.Device, "\u2193", Statics.DefaultFont, 0, 0);
-            Statics.DoubleDownArrow = new CanvasTextLayout(sender.Device, "\u21a1", Statics.DefaultFont, 0, 0);
+            Statics.UpArrow = new CanvasTextLayout(sender.Device, "\u2191", Statics.DefaultFontNoWrap, 0, 0);
+            Statics.DoubleUpArrow = new CanvasTextLayout(sender.Device, "\u219f", Statics.DefaultFontNoWrap, 0, 0);
+            Statics.DownArrow = new CanvasTextLayout(sender.Device, "\u2193", Statics.DefaultFontNoWrap, 0, 0);
+            Statics.DoubleDownArrow = new CanvasTextLayout(sender.Device, "\u21a1", Statics.DefaultFontNoWrap, 0, 0);
 
             Vector2 textboxPosition = new Vector2(20, clientHeight - 50);
             textbox = new win2d_Textbox(sender.Device, textboxPosition, 600);
@@ -179,9 +180,17 @@ namespace win2d_text_game
             textblock = new win2d_Textblock(new Vector2(20, 20), textbox.Width + 20 + button.Width, clientHeight - textbox.Height - 40, true);
             
             // START DEBUG
-            for (int i = 0; i < 100000; i++)
+            for (int i = 100; i < 200; i++)
             {
-                textblock.Append(sender.Device, i.ToString());
+                StringBuilder s = new StringBuilder();
+                s.Append(i.ToString());
+                for(int j = 0; j < 29; j++)
+                {
+                    s.Append(" ");
+                    s.Append(i.ToString());
+                }
+
+                textblock.Append(sender.Device, s.ToString());
             }
             // END DEBUG
 
