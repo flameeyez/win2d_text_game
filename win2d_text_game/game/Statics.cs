@@ -29,6 +29,8 @@ namespace win2d_text_game
         public static CanvasTextLayout DownArrow;
         public static CanvasTextLayout DoubleDownArrow;
 
+        private static Dictionary<char, double> CharacterWidthDictionary = new Dictionary<char, double>();
+
         ///////////////////////////////////////////////
 
         #region Old Project Stuff
@@ -60,6 +62,17 @@ namespace win2d_text_game
             // CanvasTextLayout objects are initialized in CreateResources
         }
 
+        public static void Initialize(CanvasDevice device)
+        {
+            LoadCharacterWidths(device);
+
+            UpArrow = new CanvasTextLayout(device, "\u2191", Statics.DefaultFontNoWrap, 0, 0);
+            DoubleUpArrow = new CanvasTextLayout(device, "\u219f", Statics.DefaultFontNoWrap, 0, 0);
+            DownArrow = new CanvasTextLayout(device, "\u2193", Statics.DefaultFontNoWrap, 0, 0);
+            DoubleDownArrow = new CanvasTextLayout(device, "\u21a1", Statics.DefaultFontNoWrap, 0, 0);
+        }
+
+        #region Random
         public static Color RandomColor()
         {
             int red = 20 + Statics.Random.Next(235);
@@ -68,11 +81,11 @@ namespace win2d_text_game
 
             return Color.FromArgb(255, (byte)red, (byte)green, (byte)blue);
         }
-
         public static string RandomString(this string[] array)
         {
             return array[Statics.Random.Next(array.Length)];
         }
+        #endregion
 
         #region VirtualKeyToString
         [DllImport("user32.dll")]
@@ -95,6 +108,36 @@ namespace win2d_text_game
             }
             ToUnicode((uint)keys, 0, keyboardState, buf, 256, 0);
             return buf.ToString();
+        }
+        #endregion
+
+        #region Character/String Width
+        private static void LoadCharacterWidths(CanvasDevice device)
+        {
+            string str = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            str += @"abcdefghijklmnopqrstuvwxyz";
+
+            str += @"1234567890";
+            str += @"!@#$%^&*()";
+
+            str += @"`~,<.>/?\|[{]}=+-_";
+
+            foreach (char c in str)
+            {
+                CanvasTextLayout l = new CanvasTextLayout(device, c.ToString(), Statics.DefaultFontNoWrap, 0, 0);
+                CharacterWidthDictionary.Add(c, l.LayoutBounds.Width);
+            }
+        }
+        public static double StringWidth(string str)
+        {
+            double dWidth = 0;
+
+            foreach (char c in str.Replace(' ', '.'))
+            {
+                dWidth += CharacterWidthDictionary[c];
+            }
+
+            return dWidth;
         }
         #endregion
 
