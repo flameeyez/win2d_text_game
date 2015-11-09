@@ -215,5 +215,10 @@ namespace win2d_text_game
             args.DrawingSession.DrawText("Strings count: " + Statics.DebugStringsCount.ToString(), new Vector2(800, 100), Colors.White);
         }
         #endregion
+
+        public static void DisplayText(string strAppend)
+        {
+            textblock.Append(Canvas.Device, strAppend);
+        }
     }
 }

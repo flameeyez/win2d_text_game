@@ -1,0 +1,13 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>bronze sword</name>
+		<description>This sword has seen better days.  Several chipped areas line the blade.</description>
+		<keywords>
+			<keyword>sword</keyword>
+		</keywords>
+		<weight>10.0</weight>
+		<value>25</value>
+    <attack-power>10</attack-power>
+	</item-template>
+</item-templates>

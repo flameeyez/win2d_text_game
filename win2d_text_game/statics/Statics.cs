@@ -47,6 +47,7 @@ namespace win2d_text_game
         public static Vector2 ColumnDividerBottom;
         #endregion
 
+        #region Initialization
         static Statics()
         {
             DefaultFont = new CanvasTextFormat();
@@ -61,7 +62,6 @@ namespace win2d_text_game
 
             // CanvasTextLayout objects are initialized in CreateResources
         }
-
         public static void Initialize(CanvasDevice device)
         {
             LoadCharacterWidths(device);
@@ -71,6 +71,23 @@ namespace win2d_text_game
             DownArrow = new CanvasTextLayout(device, "\u2193", Statics.DefaultFontNoWrap, 0, 0);
             DoubleDownArrow = new CanvasTextLayout(device, "\u21a1", Statics.DefaultFontNoWrap, 0, 0);
         }
+        private static void LoadCharacterWidths(CanvasDevice device)
+        {
+            string str = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            str += @"abcdefghijklmnopqrstuvwxyz";
+
+            str += @"1234567890";
+            str += @"!@#$%^&*()";
+
+            str += @"`~,<.>/?\|[{]}=+-_";
+
+            foreach (char c in str)
+            {
+                CanvasTextLayout l = new CanvasTextLayout(device, c.ToString(), Statics.DefaultFontNoWrap, 0, 0);
+                CharacterWidthDictionary.Add(c, l.LayoutBounds.Width);
+            }
+        }
+        #endregion
 
         #region Random
         public static Color RandomColor()
@@ -112,22 +129,6 @@ namespace win2d_text_game
         #endregion
 
         #region Character/String Width
-        private static void LoadCharacterWidths(CanvasDevice device)
-        {
-            string str = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            str += @"abcdefghijklmnopqrstuvwxyz";
-
-            str += @"1234567890";
-            str += @"!@#$%^&*()";
-
-            str += @"`~,<.>/?\|[{]}=+-_";
-
-            foreach (char c in str)
-            {
-                CanvasTextLayout l = new CanvasTextLayout(device, c.ToString(), Statics.DefaultFontNoWrap, 0, 0);
-                CharacterWidthDictionary.Add(c, l.LayoutBounds.Width);
-            }
-        }
         public static double StringWidth(string str)
         {
             double dWidth = 0;
@@ -141,6 +142,7 @@ namespace win2d_text_game
         }
         #endregion
 
+        #region HitTest
         public static bool HitTestRect(Rect rect, Point point)
         {
             if (point.X < rect.X) { return false; }
@@ -150,5 +152,6 @@ namespace win2d_text_game
 
             return true;
         }
+        #endregion
     }
 }

@@ -1,0 +1,13 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>silver amulet</name>
+		<description>This amulet is somewhat dull. You doubt that it's actually made of silver.</description>
+		<keywords>
+			<keyword>amulet</keyword>
+		</keywords>
+		<weight>0.2</weight>
+		<value>50</value>
+    <armor-factor>0</armor-factor>
+	</item-template>	
+</item-templates>

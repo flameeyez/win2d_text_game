@@ -41,6 +41,14 @@ namespace win2d_text_game
         {
             Statics.Initialize(sender.Device);
             UI.Initialize(sender);
+            Game.Initialize();
+
+            Game.OnGameCommand += Game_OnGameCommand;
+        }
+
+        private void Game_OnGameCommand(string strAppend)
+        {
+            UI.DisplayText(strAppend);
         }
         #endregion
 

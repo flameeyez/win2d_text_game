@@ -93,32 +93,94 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="xml\entity_relationships\entity_relationships.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\messages\messages.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\npc\npc-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\spells\spells.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-armor-chest-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-armor-feet-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-armor-finger-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-armor-head-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-armor-neck-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-armor-shield-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-container-backpack-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-container-pouch-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-drink-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-food-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-junk-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\templates\item-weapon-templates.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\world\world.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml\world\world_save.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
+    <Content Include="xml\world\world.compressed">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="game\controls\win2d_Button.cs" />
-    <Compile Include="game\controls\win2d_Control.cs" />
-    <Compile Include="game\controls\win2d_ScrollBar.cs" />
-    <Compile Include="game\controls\win2d_Textblock.cs" />
-    <Compile Include="game\controls\win2d_TextblockString.cs" />
-    <Compile Include="game\controls\win2d_TextblockStringCollection.cs" />
-    <Compile Include="game\IRichString.cs" />
-    <Compile Include="game\RichListBox.cs" />
-    <Compile Include="game\RichListBoxProminent.cs" />
-    <Compile Include="game\RichString.cs" />
-    <Compile Include="game\RichStringPart.cs" />
-    <Compile Include="game\Statics.cs" />
-    <Compile Include="game\StringManager.cs" />
-    <Compile Include="game\controls\win2d_Textbox.cs" />
-    <Compile Include="game\controls\win2d_TextboxCursor.cs" />
+    <Compile Include="game\Game.cs" />
+    <Compile Include="controls\win2d_Button.cs" />
+    <Compile Include="controls\win2d_Control.cs" />
+    <Compile Include="controls\win2d_ScrollBar.cs" />
+    <Compile Include="controls\win2d_Textblock.cs" />
+    <Compile Include="controls\win2d_TextblockString.cs" />
+    <Compile Include="controls\win2d_TextblockStringCollection.cs" />
+    <Compile Include="game\legacy\IRichString.cs" />
+    <Compile Include="game\legacy\RichListBox.cs" />
+    <Compile Include="game\legacy\RichListBoxProminent.cs" />
+    <Compile Include="game\legacy\RichString.cs" />
+    <Compile Include="game\legacy\RichStringPart.cs" />
+    <Compile Include="statics\Statics.cs" />
+    <Compile Include="game\legacy\StringManager.cs" />
+    <Compile Include="controls\win2d_Textbox.cs" />
+    <Compile Include="controls\win2d_TextboxCursor.cs" />
+    <Compile Include="game\world\Region.cs" />
+    <Compile Include="game\world\Room.cs" />
+    <Compile Include="game\world\Subregion.cs" />
+    <Compile Include="game\world\World.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI.cs" />
+    <Compile Include="ui\UI.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -146,6 +208,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
